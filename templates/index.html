@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>LinkedIn Recent Activity Scraper</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 2rem;
+        background: #f7f7f7;
+        color: #222;
+      }
+      h1,
+      h2 {
+        margin-bottom: 0.5rem;
+      }
+      form {
+        margin-bottom: 1rem;
+      }
+      input[type="url"],
+      button {
+        padding: 0.5rem;
+        font-size: 1rem;
+      }
+      .card {
+        background: #fff;
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+      }
+      th,
+      td {
+        border: 1px solid #e5e5e5;
+        padding: 0.5rem;
+        text-align: left;
+      }
+      .flash {
+        background: #e8f4fd;
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+        border: 1px solid #c5def5;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LinkedIn Recent Activity Scraper</h1>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash">
+      {% for message in messages %}
+      <div>{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <h2>Add Profile</h2>
+      <form method="POST" action="{{ url_for('create_profile') }}">
+        <label for="url">LinkedIn Profile URL</label><br />
+        <input
+          type="url"
+          id="url"
+          name="url"
+          placeholder="https://www.linkedin.com/in/username"
+          required
+          style="width: 70%"
+        />
+        <button type="submit">Save</button>
+      </form>
+      <form method="POST" action="{{ url_for('check_now') }}">
+        <button type="submit">Check Now</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Profiles</h2>
+      {% if profiles %}
+      <table>
+        <thead>
+          <tr>
+            <th>Profile Name</th>
+            <th>URL</th>
+            <th>Last Checked</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for profile in profiles %}
+          <tr>
+            <td>{{ profile['name'] or 'Unknown' }}</td>
+            <td><a href="{{ profile['url'] }}" target="_blank">{{ profile['url'] }}</a></td>
+            <td>{{ profile['last_checked'] or 'Not yet' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No profiles saved yet.</p>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h2>Recent Posts</h2>
+      {% if posts %}
+      <table>
+        <thead>
+          <tr>
+            <th>Profile</th>
+            <th>Post</th>
+            <th>Date</th>
+            <th>Likes</th>
+            <th>Comments</th>
+            <th>Reposts</th>
+            <th>Scraped</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+          <tr>
+            <td>{{ post['profile_name'] or post['profile_url'] }}</td>
+            <td><a href="{{ post['post_url'] }}" target="_blank">View</a></td>
+            <td>{{ post['posted_at'] }}</td>
+            <td>{{ post['likes'] }}</td>
+            <td>{{ post['comments'] }}</td>
+            <td>{{ post['reposts'] }}</td>
+            <td>{{ post['scraped_at'] }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No posts scraped yet.</p>
+      {% endif %}
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+__pycache__/
+.venv/
+*.pyc
+app.db
+playwright-report/
+node_modules/
+*.log
